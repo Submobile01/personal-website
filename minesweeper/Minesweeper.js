@@ -22,6 +22,7 @@ let buttonCount;
 let bestTime;
 let fireworks;
 
+
 function setup() {
   createCanvas(800, 600);
   rows = 15;
@@ -79,7 +80,7 @@ function mousePressed() {
     } else if (mouseButton === RIGHT) {
       buttonCount++;
     }
-    if (buttonCount === 2 && theBlock.getState() === 2) {
+    if (buttonCount === 2 && theBlock.getState() === Block.REVEALEDSTATE) {
       lightAround(y, x, 3);
     }
   }
@@ -96,13 +97,13 @@ function mouseReleased() {
       } else if (mouseButton === RIGHT) {
         buttonCount--;
       }
-      if (buttonCount === 1 && theBlock.getState() === 2 && countFlags(y, x) === theBlock.getNumber()) {
+      if (buttonCount === 1 && theBlock.getState() === Block.REVEALEDSTATE && countFlags(y, x) === theBlock.getNumber()) {
         flipAround(y, x);
-      } else if (buttonCount === 1 && theBlock.getState() === 2) {
+      } else if (buttonCount === 1 && theBlock.getState() === Block.REVEALEDSTATE) {
         lightAround(y, x, 0);
       }
   
-      if (theBlock.getState() !== 2) {
+      if (theBlock.getState() !== Block.REVEALEDSTATE) {
         if (mouseButton === LEFT) {
           // first click stuff
           // println(clickCount);
@@ -118,11 +119,11 @@ function mouseReleased() {
           activateBlock(y, x);
         } else if (mouseButton === RIGHT) {
           chu.play();
-          if (theBlock.getState() === 1) {
-            theBlock.setState(0);
+          if (theBlock.getState() === Block.FLAGSTATE) {
+            theBlock.setState(Block.ORIGSTATE);
             flagCount--;
           } else {
-            theBlock.setState(1);
+            theBlock.setState(Block.FLAGSTATE);
             flagCount++;
           }
         }
@@ -248,8 +249,8 @@ function mouseReleased() {
   }
   
   function triggerZero(i, j) {
-    if (blocks[i][j].getState() === 0 || blocks[i][j].getState() === 3) {
-      blocks[i][j].setState(2);
+    if (blocks[i][j].getState() === ORIGSTATE || blocks[i][j].getState() === 3) {
+      blocks[i][j].setState(Block.REVEALEDSTATE);
       blockCount++;
       // println(blockCount);
       if (blocks[i][j].getNumber() === 0) {
@@ -288,29 +289,29 @@ function mouseReleased() {
     let count = 0;
     if (i !== 0) {
       if (j !== 0) {
-        if (blocks[i - 1][j - 1].getState() === 1) count++;
+        if (blocks[i - 1][j - 1].getState() === Block.FLAGSTATE) count++;
       }
       if (j !== columns - 1) {
-        if (blocks[i - 1][j + 1].getState() === 1) count++;
+        if (blocks[i - 1][j + 1].getState() === Block.FLAGSTATE) count++;
       }
-      if (blocks[i - 1][j].getState() === 1) count++;
+      if (blocks[i - 1][j].getState() === Block.FLAGSTATE) count++;
     }
     // not right most
     if (i !== rows - 1) {
       if (j !== 0) {
-        if (blocks[i + 1][j - 1].getState() === 1) count++;
+        if (blocks[i + 1][j - 1].getState() === Block.FLAGSTATE) count++;
       }
       if (j !== columns - 1) {
-        if (blocks[i + 1][j + 1].getState() === 1) count++;
+        if (blocks[i + 1][j + 1].getState() === Block.FLAGSTATE) count++;
       }
-      if (blocks[i + 1][j].getState() === 1) count++;
+      if (blocks[i + 1][j].getState() === Block.FLAGSTATE) count++;
     }
     // neutral
     if (j !== 0) {
-      if (blocks[i][j - 1].getState() === 1) count++;
+      if (blocks[i][j - 1].getState() === Block.FLAGSTATE) count++;
     }
     if (j !== columns - 1) {
-      if (blocks[i][j + 1].getState() === 1) count++;
+      if (blocks[i][j + 1].getState() === Block.FLAGSTATE) count++;
     }
     return count;
   }
@@ -377,11 +378,11 @@ function mouseReleased() {
       for (let j = 0; j < columns; j++) {
         let theBlock = blocks[i][j];
         if (theBlock.getNumber() === -1) {
-          if (theBlock.getState() === 0) {
-            theBlock.setState(2);
+          if (theBlock.getState() === Block.ORIGSTATE) {
+            theBlock.setState(Block.REVEALEDSTATE);
           }
         } else {
-          if (theBlock.getState() === 1) theBlock.drawCross();
+          if (theBlock.getState() === Block.FLAGSTATE) theBlock.drawCross();
         }
       }
     }
@@ -390,7 +391,7 @@ function mouseReleased() {
   
   function activateBlock(i, j) {
     let theBlock = blocks[i][j];
-    if (theBlock.getState() === 0 || theBlock.getState() === 3) {
+    if (theBlock.getState() === Block.ORIGSTATE || theBlock.getState() === 3) {//?
       if (theBlock.getNumber() === -1) {
         gameStage = 2;
         bang.play();
@@ -404,7 +405,7 @@ function mouseReleased() {
         ding.play();
       }
       // println(blockCount);
-      theBlock.setState(2);
+      theBlock.setState(Block.REVEALEDSTATE);
     }
   }
   
@@ -412,8 +413,8 @@ function mouseReleased() {
     let theBlock = blocks[i][j];
     if (
       theBlock.getState() !== state &&
-      theBlock.getState() !== 2 &&
-      theBlock.getState() !== 1
+      theBlock.getState() !== Block.REVEALEDSTATE &&
+      theBlock.getState() !== Block.FLAGSTATE
     ) {
       theBlock.setState(state);
     }

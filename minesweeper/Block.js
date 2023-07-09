@@ -1,12 +1,17 @@
+const ORIGSTATE = 0;
+const FLAGSTATE = 1;
+const REVEALEDSTATE = 2;
+
 class Block {
     constructor(x, y, l) {
       this.posX = x * l;
       this.posY = y * l;
       this.sideL = l;
-      this.colorCode = ((posX+posY)/sideL)%2 == 0 ? true : false;
+      this.colorCode = (x+y)%2 == 0 ? true : false;
       
       
-      this.state = 0; // 0-orig; 1-flag; 2-revealed(num/bomb)
+      this.state = ORIGSTATE; // 0-orig; 1-flag; 2-revealed(num/bomb)
+      
       this.col = color(0, 255, 0);
       this.green = color(0, 255, 0);
       this.darkGreen = color(0, 230, 50);
@@ -17,24 +22,36 @@ class Block {
       this.f = "Arial";
       this.fSize = 16;
     }
+
+    static get ORIGSTATE(){
+        return ORIGSTATE;
+    }
+
+    static get FLAGSTATE(){
+        return FLAGSTATE;
+    }
+
+    static get REVEALEDSTATE(){
+        return REVEALEDSTATE;
+    }
   
     drawIt() {
       noStroke();
       switch (this.state) {
-        case 0:
+        case ORIGSTATE:
           if (this.colorCode) this.col = this.green;
           else this.col = this.darkGreen;
           fill(this.col);
           rect(this.posX, this.posY, this.sideL, this.sideL);
           break;
-        case 1:
+        case FLAGSTATE:
           if (this.colorCode) this.col = this.green;
           else this.col = this.darkGreen;
           fill(this.col);
           rect(this.posX, this.posY, this.sideL, this.sideL);
           this.drawFlag();
           break;
-        case 2:
+        case REVEALEDSTATE:
           if (this.colorCode) this.col = this.white;
           else this.col = this.grey;
           fill(this.col);
@@ -94,7 +111,7 @@ class Block {
   
     setState(n) {
       this.state = n;
-      this.drawIt();
+      this.drawIt();//updates appearance
     }
   
     setColor(r, g, b) {
