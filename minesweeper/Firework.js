@@ -171,4 +171,309 @@ class Firework {
     }
     getNumbers();
   }
+  function getNumbers() {
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < columns; j++) {
+        if (blocks[i][j].number !== -1) {
+          // not left most
+          if (i !== 0) {
+            if (j !== 0) {
+              if (blocks[i - 1][j - 1].number === -1) blocks[i][j].number++;
+            }
+            if (j !== columns - 1) {
+              if (blocks[i - 1][j + 1].number === -1) blocks[i][j].number++;
+            }
+            if (blocks[i - 1][j].number === -1) blocks[i][j].number++;
+          }
+          // not right most
+          if (i !== rows - 1) {
+            if (j !== 0) {
+              if (blocks[i + 1][j - 1].number === -1) blocks[i][j].number++;
+            }
+            if (j !== columns - 1) {
+              if (blocks[i + 1][j + 1].number === -1) blocks[i][j].number++;
+            }
+            if (blocks[i + 1][j].number === -1) blocks[i][j].number++;
+          }
+          // neutral
+          if (j !== 0) {
+            if (blocks[i][j - 1].number === -1) blocks[i][j].number++;
+          }
+          if (j !== columns - 1) {
+            if (blocks[i][j + 1].number === -1) blocks[i][j].number++;
+          }
+        }
+        // if(blocks[i][j].number>=0) blocks[i][j].state = 2;(toTest)
+      }
+    }
+  }
   
+  function triggerZero(i, j) {
+    if (blocks[i][j].getState() === 0 || blocks[i][j].getState() === 3) {
+      blocks[i][j].setState(2);
+      blockCount++;
+      // println(blockCount);
+      if (blocks[i][j].getNumber() === 0) {
+        if (i !== 0) {
+          if (j !== 0) {
+            triggerZero(i - 1, j - 1);
+          }
+          if (j !== columns - 1) {
+            triggerZero(i - 1, j + 1);
+          }
+          triggerZero(i - 1, j);
+        }
+        // not right most
+        if (i !== rows - 1) {
+          if (j !== 0) {
+            triggerZero(i + 1, j - 1);
+          }
+          if (j !== columns - 1) {
+            triggerZero(i + 1, j + 1);
+          }
+          triggerZero(i + 1, j);
+        }
+        // neutral
+        if (j !== 0) {
+          triggerZero(i, j - 1);
+        }
+        if (j !== columns - 1) {
+          triggerZero(i, j + 1);
+        }
+      }
+      // println(1); (ToTest)
+    }
+  }
+  
+  function countFlags(i, j) {
+    let count = 0;
+    if (i !== 0) {
+      if (j !== 0) {
+        if (blocks[i - 1][j - 1].getState() === 1) count++;
+      }
+      if (j !== columns - 1) {
+        if (blocks[i - 1][j + 1].getState() === 1) count++;
+      }
+      if (blocks[i - 1][j].getState() === 1) count++;
+    }
+    // not right most
+    if (i !== rows - 1) {
+      if (j !== 0) {
+        if (blocks[i + 1][j - 1].getState() === 1) count++;
+      }
+      if (j !== columns - 1) {
+        if (blocks[i + 1][j + 1].getState() === 1) count++;
+      }
+      if (blocks[i + 1][j].getState() === 1) count++;
+    }
+    // neutral
+    if (j !== 0) {
+      if (blocks[i][j - 1].getState() === 1) count++;
+    }
+    if (j !== columns - 1) {
+      if (blocks[i][j + 1].getState() === 1) count++;
+    }
+    return count;
+  }
+  function flipAround(i, j) {
+    if (i !== 0) {
+      if (j !== 0) {
+        activateBlock(i - 1, j - 1);
+      }
+      if (j !== columns - 1) {
+        activateBlock(i - 1, j + 1);
+      }
+      activateBlock(i - 1, j);
+    }
+    // not right most
+    if (i !== rows - 1) {
+      if (j !== 0) {
+        activateBlock(i + 1, j - 1);
+      }
+      if (j !== columns - 1) {
+        activateBlock(i + 1, j + 1);
+      }
+      activateBlock(i + 1, j);
+    }
+    // neutral
+    if (j !== 0) {
+      activateBlock(i, j - 1);
+    }
+    if (j !== columns - 1) {
+      activateBlock(i, j + 1);
+    }
+  }
+  
+  function lightAround(i, j, state) {
+    if (i !== 0) {
+      if (j !== 0) {
+        lightBlock(i - 1, j - 1, state);
+      }
+      if (j !== columns - 1) {
+        lightBlock(i - 1, j + 1, state);
+      }
+      lightBlock(i - 1, j, state);
+    }
+    // not right most
+    if (i !== rows - 1) {
+      if (j !== 0) {
+        lightBlock(i + 1, j - 1, state);
+      }
+      if (j !== columns - 1) {
+        lightBlock(i + 1, j + 1, state);
+      }
+      lightBlock(i + 1, j, state);
+    }
+    // neutral
+    if (j !== 0) {
+      lightBlock(i, j - 1, state);
+    }
+    if (j !== columns - 1) {
+      lightBlock(i, j + 1, state);
+    }
+  }
+  
+  function drawAllMines() {
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < columns; j++) {
+        let theBlock = blocks[i][j];
+        if (theBlock.getNumber() === -1) {
+          if (theBlock.getState() === 0) {
+            theBlock.setState(2);
+          }
+        } else {
+          if (theBlock.getState() === 1) theBlock.drawCross();
+        }
+      }
+    }
+    skip = false;
+  }
+  
+  function activateBlock(i, j) {
+    let theBlock = blocks[i][j];
+    if (theBlock.getState() === 0 || theBlock.getState() === 3) {
+      if (theBlock.getNumber() === -1) {
+        gameStage = 2;
+        bang.play();
+        endTime = hour() * 3600 + minute() * 60 + second();
+      } else if (blockCount === rows * columns - numMine) {
+      } else if (theBlock.getNumber() === 0) {
+        triggerZero(i, j);
+        wow.play();
+      } else {
+        blockCount++;
+        ding.play();
+      }
+      // println(blockCount);
+      theBlock.setState(2);
+    }
+  }
+  
+  function lightBlock(i, j, state) {
+    let theBlock = blocks[i][j];
+    if (
+      theBlock.getState() !== state &&
+      theBlock.getState() !== 2 &&
+      theBlock.getState() !== 1
+    ) {
+      theBlock.setState(state);
+    }
+  }
+  function drawRestart() {
+    //the rectangle
+    fill(130, 130, 210, 130);
+    noStroke();
+    rect(width / 3, height / 4, width / 3, height / 2, 55);
+  
+    //the words
+    let bestTimeString;
+    if (bestTime === 0) bestTimeString = "--";
+    else bestTimeString = bestTime + "";
+    f = createFont("Arial", width / 16, true);
+    fill(0);
+    text("Time: " + "--", width * 0.35, height * 0.35);
+    text("Best Time: " + bestTimeString, width * 0.35, height * 0.42);
+  
+    //restart Button
+    fill(color(60));
+    noStroke();
+    rect(width * 0.45, height * 0.56, width / 10, height * 0.1);
+    fill(160, 70, 70, 200);
+    text("Restart", width * 0.46, height * 0.62);
+  }
+  
+  function restart() {
+    gameStage = 1;
+    flagCount = 0;
+    blockCount = 0;
+    clickCount = 0;
+    numMine = round(rows * columns * densMine);
+    sideL = height / rows;
+    blocks = new Array(rows);
+    fireworks = [];
+    background(0);
+    //instantiate each Block
+    for (let i = 0; i < rows; i++) {
+      blocks[i] = new Array(columns);
+      for (let j = 0; j < columns; j++) {
+        blocks[i][j] = new Block(j, i, height / rows);
+      }
+    }
+    //generate mines and numbers
+    genField(numMine);
+  
+    //draw the initial
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < columns; j++) {
+        blocks[i][j].drawIt();
+      }
+    }
+  }
+  
+  function reGenBlocks() {
+    //instantiate each Block
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < columns; j++) {
+        blocks[i][j] = new Block(j, i, height / rows);
+      }
+    }
+    //generate mines and numbers
+    genField(numMine);
+  }
+  
+  function drawWinBoard() {
+    //the rectangle
+    fill(color(130, 130, 210, 130));
+    noStroke();
+    rect(width / 3, height / 4, width / 3, height / 2, 55);
+  
+    //the words
+    let bestTimeString;
+    let thisTime = endTime - startTime;
+    if (thisTime < bestTime || bestTime === 0) {
+      bestTime = thisTime;
+    }
+  
+    if (bestTime === 0) bestTimeString = "--";
+    else bestTimeString = bestTime + "";
+    f = createFont("Times New Roman", width / 48, true);
+    fill(40);
+    textFont(f);
+    text("Click Anywhere for more FUN", width * 0.38, height * 0.29);
+    f = createFont("Arial", int(width / 36.0), true);
+    fill(44, 66, 132);
+    textFont(f);
+    text("Time: " + thisTime, width * 0.35, height * 0.35);
+    text("Best Time: " + bestTimeString, width * 0.35, height * 0.42);
+  
+    //restart Button
+    fill(color(60, 200));
+    noStroke();
+    rect(width * 0.45, height * 0.56, width / 10, height * 0.1);
+    fill(0);
+    text("Restart", width * 0.46, height * 0.62);
+  }
+  
+  function drawMenu() {
+    background(200);
+  }    
