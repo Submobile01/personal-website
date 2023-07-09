@@ -15,7 +15,7 @@ let startTime;
 let endTime;
 let clickCount = 0;
 let numMine;
-let densMine = 0.23;
+let densMine=0.23;
 let flagCount;
 let blockCount;
 let buttonCount;
@@ -23,10 +23,26 @@ let bestTime;
 let fireworks;
 
 
+
 function setup() {
-  createCanvas(800, 600);
+  gameCanvas = createCanvas(800, 600);
+  gameCanvas.parent("canvas-container");
+  // canvasDiv = document.getElementById("canvas-container");
+  // if(canvasDiv) canvasDiv.appendChild(gameCanvas);
   rows = 15;
   columns = 20;
+  const slider = document.getElementById("slider");
+  const saveButton = document.getElementById("saveButton"); 
+  if(slider) slider.addEventListener("input", ()=>{
+    document.getElementById("sliderValue").textContent = "Mine density is 0." + slider.value + " ";
+  });
+  if(saveButton) saveButton.addEventListener("click", function() {
+    densMine = parseInt(slider.value)/100;
+    // Update the game variable using the slider value
+    restart();
+    console.log("mine density is ", densMine);
+  });
+  
   restart();
   chu = loadSound("minesweeper/data/chu.wav");
   yes = loadSound("minesweeper/data/yes.wav");
@@ -427,9 +443,9 @@ function mouseReleased() {
   
     //the words
     let bestTimeString;
-    if (bestTime === 0) bestTimeString = "--";
+    if (bestTime === undefined) bestTimeString = "--";
     else bestTimeString = bestTime + "";
-    textFont("Arial", width / 16);
+    textFont("Arial", width / 36);
     fill(0);
     text("Time: " + "--", width * 0.35, height * 0.35);
     text("Best Time: " + bestTimeString, width * 0.35, height * 0.42);
