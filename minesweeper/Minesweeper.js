@@ -15,7 +15,7 @@ let startTime;
 let endTime;
 let clickCount = 0;
 let numMine;
-let densMine = 0.33;
+let densMine = 0.23;
 let flagCount;
 let blockCount;
 let buttonCount;
@@ -80,7 +80,7 @@ function mousePressed() {
     } else if (mouseButton === RIGHT) {
       buttonCount++;
     }
-    if (buttonCount === 2 && theBlock.getState() === Block.REVEALEDSTATE) {
+    if ( theBlock.getState() === Block.REVEALEDSTATE) {
       lightAround(y, x, 3);
     }
   }
@@ -97,9 +97,9 @@ function mouseReleased() {
       } else if (mouseButton === RIGHT) {
         buttonCount--;
       }
-      if (buttonCount === 1 && theBlock.getState() === Block.REVEALEDSTATE && countFlags(y, x) === theBlock.getNumber()) {
+      if (theBlock.getState() === Block.REVEALEDSTATE && countFlags(y, x) === theBlock.getNumber()) {
         flipAround(y, x);
-      } else if (buttonCount === 1 && theBlock.getState() === Block.REVEALEDSTATE) {
+      } else if (theBlock.getState() === Block.REVEALEDSTATE) {
         lightAround(y, x, 0);
       }
   
