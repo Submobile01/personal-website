@@ -3,7 +3,9 @@ class Block {
       this.posX = x * l;
       this.posY = y * l;
       this.sideL = l;
-      this.colorCode = false;
+      this.colorCode = ((posX+posY)/sideL)%2 == 0 ? true : false;
+      
+      
       this.state = 0; // 0-orig; 1-flag; 2-revealed(num/bomb)
       this.col = color(0, 255, 0);
       this.green = color(0, 255, 0);
@@ -12,7 +14,8 @@ class Block {
       this.white = color(240);
       this.red = color(255, 0, 0);
       this.number = 0; // surrounding mines(0-empty, -1-mine)
-      this.f = createFont("Arial", 16, true);
+      this.f = "Arial";
+      this.fSize = 16;
     }
   
     drawIt() {
@@ -52,7 +55,7 @@ class Block {
   
     drawNumber() {
       if (this.number != 0) {
-        textFont(this.f, 20);
+        textFont(this.f, this.fSize);
         fill(0);
         text(this.number, this.posX + this.sideL * 0.35, this.posY + this.sideL * 0.62);
       }
@@ -109,5 +112,5 @@ class Block {
     getNumber() {
       return this.number;
     }
-  }
+}
   
