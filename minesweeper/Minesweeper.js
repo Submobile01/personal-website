@@ -35,7 +35,7 @@ function setup() {
   const slider = document.getElementById("slider");
   const saveButton = document.getElementById("saveButton"); 
   if(slider) slider.addEventListener("input", ()=>{
-    document.getElementById("sliderValue").textContent = "Mine density is 0." + slider.value + " ";
+    document.getElementById("sliderValue").textContent = "Mine density is <strong>" + slider.value + "%<strong/> ";
   });
   if(saveButton) saveButton.addEventListener("click", function() {
     densMine = parseInt(slider.value)/100;

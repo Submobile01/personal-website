@@ -9,13 +9,37 @@
             .container {
                 text-align: center;
             }
+
+            .content-wrapper {
+                display: flex;
+                justify-content: center;
+                text-align: left;
+                align-items: flex-start;
+            }
             
             canvas-container {
                 display: flex;
                 justify-content: center;
                 align-items: center;
             }
+
+            .main-title {
+                font-family: "sacramento", cursive;
+            }
+
+            .section-title {
+                font-family: "Lobster", cursive;
+                color:#2f9f4b;
+            }
+
+            .fancy-text {
+                font-family: "sacramento", cursive;
+                color:rgb(46, 92, 148);
+            }
             
+            em {
+                color:rgba(0, 0, 0, 0.885);
+            }
             
             
             p {
@@ -34,18 +58,55 @@
     </head>
     <body>
         <div class="container">
-            <h1>Minesweeper</h1>
+            <h1 class="main-title">Minesweeper</h1>
+
+            <p class="fancy-text">This is a fun minesweeper game with exciting sound effects and great visuals after winning. Enjoy!</p>
 
             <div id="densMine-slider-container">
                 <input type="range" id="slider" min="0" max="50" value="25" step="1" id="slider">
-                <span id="sliderValue">Mine density is 0.25 (Default) </span>
+                <span id="sliderValue">Mine density is <strong>25%</strong> (Default) </span>
                 <button id="saveButton">Save(This will restart the game)</button>
             </div>
-            
 
-            <div id="canvas-container">
-                <p>This is a fun minesweeper game with exciting sound effects and great visuals after winning. Enjoy!</p>
+            <div class="content-wrapper">
+                <div id="canvas-container">
+                    
+                </div>
+                
+
+                <div id="instructions">
+                    <h2 class="section-title">How to Play</h2>
+                    
+                    <ul>
+                        <li>Your <strong>goal</strong> is to activate all squares without a mine under.</li>
+                        <li>Drag the <strong>slider</strong> to change the density of the mines. Click <strong>Save</strong> to start a new game with the density selected.</li>
+                        <li><strong>Definition</strong> surrounding squares: 
+                            the squares that are (diagonally) adjacent to the current square;
+                            a square usually has eight surrounding squares, if in the middle of board.</li>
+                        <li><strong>Definition</strong> flag: 
+                            a symbol on a square that a player places to mark that there is a mine under the square.</li>
+                        <li><em>Left Click</em>:
+                            <ul>
+                                <li>Unactivated square: <strong>Activates</strong> the square.
+                                    If there's a mine under, game over; if not, shows the number of mines surrounding it</li>
+                                <li>Revealed square: <strong>Tries</strong> to activate the surrounding squares without flag.
+                                    If number of flags surrounding the square equal to the number on the square, then activates surroundings successfully.
+                                    If not, it will just light up the surrounding unactivated squares.</li>
+                            </ul>
+                        </li>
+                        <li><em>Right Click</em>:
+                            <ul>
+                                <li>Unactivated Square: place/remove a flag.</li>
+                                <li>Activated Square: same as Left Click</li>
+                            </ul>
+
+                        </li>
+                    </ul>
+                    
+                </div>
             </div>
+
+            
             
         </div>
         <script src="libraries/p5.js"></script>
