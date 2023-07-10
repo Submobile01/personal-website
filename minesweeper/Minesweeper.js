@@ -108,7 +108,7 @@ function mousePressed() {
       buttonCount++;
     }
     if ( theBlock.getState() === Block.REVEALEDSTATE) {
-      lightAround(y, x, 3);
+      lightAround(y, x, Block.LIGHTEDSTATE);
     }
   }
 }
@@ -120,14 +120,14 @@ function mouseReleased() {
       let theBlock = blocks[y][x];
       if (mouseButton === LEFT) {
         buttonCount--;
-        lightBlock(y, x, 0);
+        lightBlock(y, x, Block.ORIGSTATE);
       } else if (mouseButton === RIGHT) {
         buttonCount--;
       }
       if (theBlock.getState() === Block.REVEALEDSTATE && countFlags(y, x) === theBlock.getNumber()) {
         flipAround(y, x);
       } else if (theBlock.getState() === Block.REVEALEDSTATE) {
-        lightAround(y, x, 0);
+        lightAround(y, x, Block.ORIGSTATE);
       }
   
       if (theBlock.getState() !== Block.REVEALEDSTATE) {
@@ -216,7 +216,13 @@ function mouseReleased() {
     }
     console.log(rows * columns - numMine - blockCount);
   }
-  
+
+  /**
+   * sets numMine number of blocks to be a mine (number = -1)
+   * and generate number attribute of all blocks
+   * 
+   * @param {integer} numMine number of mines to put into game
+   */
   function genField(numMine) {
     let f = new Array(rows).fill(0).map(() => new Array(columns).fill(0));
     for (let i = 0; i < numMine; i++) {
@@ -239,6 +245,10 @@ function mouseReleased() {
     }
     getNumbers();
   }
+
+  /**
+   * updates number attribute of all blocks in game
+   */
   function getNumbers() {
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < columns; j++) {
@@ -276,8 +286,14 @@ function mouseReleased() {
     }
   }
   
+  /**
+   * when the selected block is zero, triggers surrounding blocks
+   * 
+   * @param {integer} i vertical index of the block selected
+   * @param {integer} j horizontal index of the block selected
+   */
   function triggerZero(i, j) {
-    if (blocks[i][j].getState() === ORIGSTATE || blocks[i][j].getState() === 3) {
+    if (blocks[i][j].getState() === ORIGSTATE || blocks[i][j].getState() === Block.LIGHTEDSTATE) {
       blocks[i][j].setState(Block.REVEALEDSTATE);
       blockCount++;
       // println(blockCount);
@@ -313,6 +329,13 @@ function mouseReleased() {
     }
   }
   
+  /**
+   * counts the number of flags surrounding the selected block
+   * 
+   * @param {integer} i vertical index of the block selected
+   * @param {integer} j horizontal index of the block selected
+   * @returns number of flags surrounding
+   */
   function countFlags(i, j) {
     let count = 0;
     if (i !== 0) {
@@ -343,6 +366,13 @@ function mouseReleased() {
     }
     return count;
   }
+
+  /**
+   * activates the surrounding blocks
+   * 
+   * @param {integer} i vertical index of the block selected
+   * @param {integer} j horizontal index of the block selected
+   */
   function flipAround(i, j) {
     if (i !== 0) {
       if (j !== 0) {
@@ -372,6 +402,13 @@ function mouseReleased() {
     }
   }
   
+  /**
+   * lights around the selected block
+   * 
+   * @param {integer} i vertical index of the block selected
+   * @param {integer} j horizontal index of the block selected
+   * @param {integer} state the state to set the block to(dim/light)
+   */
   function lightAround(i, j, state) {
     if (i !== 0) {
       if (j !== 0) {
@@ -401,6 +438,11 @@ function mouseReleased() {
     }
   }
   
+
+  /**
+   * visualize the locations of all mines and blocks
+   * when a bomb is triggered and the restart game state happens
+   */
   function drawAllMines() {
     for (let i = 0; i < rows; i++) {
       for (let j = 0; j < columns; j++) {
@@ -417,6 +459,13 @@ function mouseReleased() {
     skip = false;
   }
   
+
+  /**
+   * activates the selected block and triggers the consequences
+   * 
+   * @param {integer} i vertical index of the block selected
+   * @param {integer} j horizontal index of the block selected
+   */
   function activateBlock(i, j) {
     let theBlock = blocks[i][j];
     if (theBlock.getState() === Block.ORIGSTATE || theBlock.getState() === 3) {//?
@@ -437,6 +486,13 @@ function mouseReleased() {
     }
   }
   
+  /**
+   * lights(LIGHTEDSTATE)/dims(ORIGSTATE) the selected block
+   * 
+   * @param {integer} i vertical index of the block selected
+   * @param {integer} j horizontal index of the block selected
+   * @param {integer} state the state to set the block
+   */
   function lightBlock(i, j, state) {
     let theBlock = blocks[i][j];
     if (
@@ -447,6 +503,10 @@ function mouseReleased() {
       theBlock.setState(state);
     }
   }
+
+  /**
+   * draws the restart window and button on canvas
+   */
   function drawRestart() {
     //the rectangle
     fill(130, 130, 210, 130);
@@ -480,15 +540,8 @@ function mouseReleased() {
     blocks = new Array(rows);
     fireworks = [];
     background(0);
-    //instantiate each Block
-    for (let i = 0; i < rows; i++) {
-      blocks[i] = new Array(columns);
-      for (let j = 0; j < columns; j++) {
-        blocks[i][j] = new Block(j, i, height / rows);
-      }
-    }
-    //generate mines and numbers
-    genField(numMine);
+    
+    reGenBlocks();
   
     //draw the initial
     for (let i = 0; i < rows; i++) {
@@ -498,9 +551,14 @@ function mouseReleased() {
     }
   }
   
+  /**
+   * re-instantiate the blocks to their ORIGSTATE
+   * and generate the mines and numbers on the squares
+   */
   function reGenBlocks() {
     //instantiate each Block
     for (let i = 0; i < rows; i++) {
+      blocks[i] = new Array(columns);
       for (let j = 0; j < columns; j++) {
         blocks[i][j] = new Block(j, i, height / rows);
       }
@@ -509,6 +567,7 @@ function mouseReleased() {
     genField(numMine);
   }
   
+
   function drawWinBoard() {
     //the rectangle
     fill(color(130, 130, 210, 130));
@@ -540,15 +599,24 @@ function mouseReleased() {
     text("Restart", width * 0.46, height * 0.62);
   }
   
+
   function drawMenu() {
     background(200);
   }    
 
+  /**
+   * updates the remaining number of blocks (without mines)
+   * to be activated to the element named remainingBlocks on html
+   */
   function updateRemainingBlocks(){
     remBlocks =  rows * columns - numMine;
     if(blockCount) remBlocks -= blockCount;
     if(remainingBlocks) remainingBlocks.innerHTML = "Blocks Remaining: " + remBlocks  + " ";
   }
+
+  /**
+   * updates the volume of all sound effects base on the value of the volume-slider
+   */
   function updateSoundVolume(){
     volume = volumeSlider.value / 100;
     for(let sound of soundFiles) sound.setVolume(volume);
