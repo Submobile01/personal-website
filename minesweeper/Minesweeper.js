@@ -22,6 +22,7 @@ let buttonCount;
 let bestTime;
 let fireworks;
 let remainingBlocks;
+let volumeSlider;
 
 
 
@@ -48,12 +49,18 @@ function setup() {
   });
   
   restart();
-  chu = loadSound("minesweeper/data/chu.wav");
-  yes = loadSound("minesweeper/data/yes.wav");
-  hua = loadSound("minesweeper/data/hua.wav");
-  bang = loadSound("minesweeper/data/bang.wav");
-  wow = loadSound("minesweeper/data/wow.wav");
-  ding = loadSound("minesweeper/data/ding.wav");
+  soundFiles = [];
+  chu = loadSound("minesweeper/data/chu.wav");soundFiles.push(chu);
+  yes = loadSound("minesweeper/data/yes.wav");soundFiles.push(yes);
+  hua = loadSound("minesweeper/data/hua.wav");soundFiles.push(hua);
+  bang = loadSound("minesweeper/data/bang.wav");soundFiles.push(bang);
+  wow = loadSound("minesweeper/data/wow.wav");soundFiles.push(wow);
+  ding = loadSound("minesweeper/data/ding.wav");soundFiles.push(ding);
+  volumeSlider = document.getElementById("volume-slider");
+  updateSoundVolume();
+  if(volumeSlider) volumeSlider.addEventListener("input", updateSoundVolume);
+
+
   for (let element of document.getElementsByClassName("p5Canvas")) {
     element.addEventListener("contextmenu", (e) => e.preventDefault());
   }
@@ -541,4 +548,8 @@ function mouseReleased() {
     remBlocks =  rows * columns - numMine;
     if(blockCount) remBlocks -= blockCount;
     if(remainingBlocks) remainingBlocks.innerHTML = "Blocks Remaining: " + remBlocks  + " ";
+  }
+  function updateSoundVolume(){
+    volume = volumeSlider.value / 100;
+    for(let sound of soundFiles) sound.setVolume(volume);
   }
