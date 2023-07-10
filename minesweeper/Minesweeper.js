@@ -24,6 +24,7 @@ let fireworks;
 
 
 
+
 function setup() {
   gameCanvas = createCanvas(800, 600);
   gameCanvas.parent("canvas-container");
@@ -505,6 +506,7 @@ function mouseReleased() {
   
     //the words
     let bestTimeString;
+    if(!bestTime) bestTime = 0;
     let thisTime = endTime - startTime;
     if (thisTime < bestTime || bestTime === 0) {
       bestTime = thisTime;
