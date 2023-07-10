@@ -21,6 +21,7 @@ let blockCount;
 let buttonCount;
 let bestTime;
 let fireworks;
+let remainingBlocks;
 
 
 
@@ -32,6 +33,8 @@ function setup() {
   // if(canvasDiv) canvasDiv.appendChild(gameCanvas);
   rows = 15;
   columns = 20;
+  remainingBlocks = document.getElementById("remaining-blocks");
+  updateRemainingBlocks();
   const slider = document.getElementById("slider");
   const saveButton = document.getElementById("saveButton"); 
   if(slider) slider.addEventListener("input", ()=>{
@@ -149,6 +152,7 @@ function mouseReleased() {
         }*/
         // theBlock.drawIt();
       }
+      updateRemainingBlocks();
       if (blockCount === rows * columns - numMine) {
         yes.play();
         gameStage = 3;
@@ -532,3 +536,9 @@ function mouseReleased() {
   function drawMenu() {
     background(200);
   }    
+
+  function updateRemainingBlocks(){
+    remBlocks =  rows * columns - numMine;
+    if(blockCount) remBlocks -= blockCount;
+    if(remainingBlocks) remainingBlocks.innerHTML = "Blocks Remaining: " + remBlocks  + " ";
+  }
