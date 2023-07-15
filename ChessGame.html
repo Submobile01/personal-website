@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Minesweeper-Game</title>
+        
+        <style> 
+            body {padding: 0; margin: 0;}
+            .container {
+                text-align: center;
+            }
+
+            .content-wrapper {
+                display: flex;
+                justify-content: center;
+                text-align: left;
+                align-items: flex-start;
+            }
+            
+            canvas-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .main-title {
+                font-family: "sacramento", cursive;
+            }
+
+            .section-title {
+                font-family: "Lobster", cursive;
+                color:#2f9f4b;
+            }
+
+            .fancy-text {
+                font-family: "sacramento", cursive;
+                color:rgb(46, 92, 148);
+            }
+            
+            em {
+                color:rgba(0, 0, 0, 0.885);
+            }
+            
+            
+            p {
+                margin-left: 20px;
+                /* Additional styling for the game description */
+            }
+              
+        </style>
+
+        
+        
+        
+
+        
+
+    </head>
+    <body>
+        <div class="container">
+            <h1 class="main-title">Chess w/ AI</h1>
+
+            <p class="fancy-text">This is a Chess game that you can play with AI. Enjoy!</p>
+
+            
+
+            <div class="content-wrapper">
+                <div id="canvas-container">
+                    
+                </div>
+                
+
+                
+            </div>
+
+            
+            
+        </div>
+        <script src="libraries/p5.js"></script>
+        
+        <script src="libraries/p5.sound.js"></script>
+        <script src="chess/Ai.js"></script>
+        <script src="chess/Board.js"></script>
+        <script src="chess/ChessRunner.js"></script>
+        <script src="chess/Piece.js"></script>
+        <script src="chess/Square.js"></script>
+    </body>
+</html>
