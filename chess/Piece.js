@@ -1,8 +1,9 @@
 class Piece {
     constructor(side, x, y, pieceID) {
       this.image;
-      this.side = '';
       this.sideId = side;
+      if(side == 1) this.side = "white";
+      else if(side == -1) this.side = "black";
       this.name = '';
       this.posX = x;
       this.posY = y;
@@ -11,6 +12,7 @@ class Piece {
       this.value;
       this.selected = false;
       this.real = true;
+      if(side == -100) this.real = false;
       this.moved = false;
       this.justMoved = false;
       this.flipped = false;
@@ -20,9 +22,12 @@ class Piece {
       this.squares = []; //placeholder
       this.moveSquares = []; //moves
       this.visionSquares = []; //visions
-      this.image = loadImage(this.side + this.name + ".png");
+      this.setPieceName(pieceID);
+      console.log(this.side + this.name);
+      if(this.real)
+        this.image = loadImage("chess/data/" + this.side + this.name + ".png");
       this.selected = false;
-      this.real = true;
+      
       this.setMaterial();
     }
     
@@ -80,7 +85,7 @@ class Piece {
     
     checkLegal(theBoard, square) {
       if (this.sideId === theBoard.turn) {
-        if (this.id === KING && this.castle(theBoard).contains(square)) {
+        if (this.id === KING && this.castle(theBoard).includes(square)) {
           this.castling = square.x - this.posX;
           return true;
         }
@@ -171,6 +176,7 @@ class Piece {
     }
     return this.visionSquares;
   }
+
   rookMoves(theBoard, counter, direction) {
     let squares = [];
     //left
@@ -234,7 +240,7 @@ class Piece {
         direction++;
       } else {
         squares.push(square);
-        this.rookMoves(theBoard, counter + 1, direction);
+        rookMoves(theBoard, counter + 1, direction);
       }
     }
   
@@ -439,6 +445,7 @@ class Piece {
     }
     return squares;
   }
+
   pawnMoves(theBoard) {
     let squares = [];
     let square;
@@ -533,353 +540,363 @@ class Piece {
     }
     return null;
   }
+
+
   rookVision(theBoard, counter, direction) {
     if (direction === 1) { // left
-      let square = theBoard.squares[posY][posX - counter];
-      if (posX - counter < 1 || posX - counter > 8) { // when out of border
+      let square = theBoard.squares[this.posY][this.posX - counter];
+      if (this.posX - counter < 1 || this.posX - counter > 8) { // when out of border
         counter = 1;
         direction++;
       } else if (square.occupied) {
-        visionSquares.push(square);
+        this.visionSquares.push(square);
         counter = 1;
         direction++;
       } else {
-        visionSquares.push(square);
-        rookVision(theBoard, counter + 1, direction);
+        this.visionSquares.push(square);
+        this.rookVision(theBoard, counter + 1, direction);
       }
     }
     if (direction === 2) { // right
-      let square = theBoard.squares[posY][posX + counter];
-      if (posX + counter < 1 || posX + counter > 8) { // when out of border
+      let square = theBoard.squares[this.posY][this.posX + counter];
+      if (this.posX + counter < 1 || this.posX + counter > 8) { // when out of border
         counter = 1;
         direction++;
       } else if (square.occupied) {
-        visionSquares.push(square);
+        this.visionSquares.push(square);
         counter = 1;
         direction++;
       } else {
-        visionSquares.push(square);
-        rookVision(theBoard, counter + 1, direction);
+        this.visionSquares.push(square);
+        this.rookVision(theBoard, counter + 1, direction);
       }
     }
     if (direction === 3) { // up
-      let square = theBoard.squares[posY + counter][posX];
-      if (posY + counter < 1 || posY + counter > 8) { // when out of border
+      let square = theBoard.squares[this.posY + counter][this.posX];
+      if (this.posY + counter < 1 || this.posY + counter > 8) { // when out of border
         counter = 1;
         direction++;
       } else if (square.occupied) {
-        visionSquares.push(square);
+        this.visionSquares.push(square);
         counter = 1;
         direction++;
       } else {
-        visionSquares.push(square);
-        rookVision(theBoard, counter + 1, direction);
+        this.visionSquares.push(square);
+        this.rookVision(theBoard, counter + 1, direction);
       }
     }
     if (direction === 4) { // down
-      let square = theBoard.squares[posY - counter][posX];
-      if (posY - counter < 1 || posY - counter > 8) { // when out of border
+      let square = theBoard.squares[this.posY - counter][this.posX];
+      if (this.posY - counter < 1 || this.posY - counter > 8) { // when out of border
         counter = 1;
         direction++;
       } else if (square.occupied) {
-        visionSquares.push(square);
+        this.visionSquares.push(square);
         counter = 1;
         direction++;
       } else {
-        visionSquares.push(square);
-        rookVision(theBoard, counter + 1, direction);
+        this.visionSquares.push(square);
+        this.rookVision(theBoard, counter + 1, direction);
       }
     }
   
-    return visionSquares;
+    return this.visionSquares;
   }
 
   
     bishopVision(theBoard, counter, direction) {
       if (direction === 1) { // left up
-        let square = theBoard.squares[posY + counter][posX - counter];
-        if (posX - counter < 1 || posX - counter > 8 || posY + counter < 1 || posY + counter > 8) {
+        let square = theBoard.squares[this.posY + counter][this.posX - counter];
+        if (this.posX - counter < 1 || this.posX - counter > 8 || this.posY + counter < 1 || this.posY + counter > 8) {
           counter = 1;
           direction++;
         } else if (square.occupied) {
-          visionSquares.push(square);
+          this.visionSquares.push(square);
           counter = 1;
           direction++;
         } else {
-          visionSquares.push(square);
+          this.visionSquares.push(square);
           this.bishopVision(theBoard, counter + 1, direction);
         }
       }
       if (direction === 2) { // right up
-        let square = theBoard.squares[posY + counter][posX + counter];
-        if (posX + counter < 1 || posX + counter > 8 || posY + counter < 1 || posY + counter > 8) {
+        let square = theBoard.squares[this.posY + counter][this.posX + counter];
+        if (this.posX + counter < 1 || this.posX + counter > 8 || this.posY + counter < 1 || this.posY + counter > 8) {
           counter = 1;
           direction++;
         } else if (square.occupied) {
-          visionSquares.push(square);
+          this.visionSquares.push(square);
           counter = 1;
           direction++;
         } else {
-          visionSquares.push(square);
+          this.visionSquares.push(square);
           this.bishopVision(theBoard, counter + 1, direction);
         }
       }
       if (direction === 3) { // left down
-        let square = theBoard.squares[posY - counter][posX - counter];
-        if (posX - counter < 1 || posX - counter > 8 || posY - counter < 1 || posY - counter > 8) {
+        let square = theBoard.squares[this.posY - counter][this.posX - counter];
+        if (this.posX - counter < 1 || this.posX - counter > 8 || this.posY - counter < 1 || this.posY - counter > 8) {
           counter = 1;
           direction++;
         } else if (square.occupied) {
-          visionSquares.push(square);
+          this.visionSquares.push(square);
           counter = 1;
           direction++;
         } else {
-          visionSquares.push(square);
+          this.visionSquares.push(square);
           this.bishopVision(theBoard, counter + 1, direction);
         }
       }
       if (direction === 4) { // right down
-        let square = theBoard.squares[posY - counter][posX + counter];
-        if (posX + counter < 1 || posX + counter > 8 || posY - counter < 1 || posY - counter > 8) {
+        let square = theBoard.squares[this.posY - counter][this.posX + counter];
+        if (this.posX + counter < 1 || this.posX + counter > 8 || this.posY - counter < 1 || this.posY - counter > 8) {
           counter = 1;
           direction++;
         } else if (square.occupied) {
-          visionSquares.push(square);
+          this.visionSquares.push(square);
           counter = 1;
           direction++;
         } else {
-          visionSquares.push(square);
+          this.visionSquares.push(square);
           this.bishopVision(theBoard, counter + 1, direction);
         }
       }
   
-      return visionSquares;
+      return this.visionSquares;
     }
   
     queenVision(theBoard) {
       this.rookVision(theBoard, 1, 1);
       this.bishopVision(theBoard, 1, 1);
-      return visionSquares;
+      return this.visionSquares;
     }
   
     knightVision(theBoard) {
         let square;
         
         // From left slightly up clockwise
-        if (this.onBoard(posY + 1, posX - 2)) {
-            square = theBoard.squares[posY + 1][posX - 2];
+        if (this.onBoard(this.posY + 1, this.posX - 2)) {
+            square = theBoard.squares[this.posY + 1][this.posX - 2];
             if (square.occupied) {
             //if (square.piece.side != this.side);
             //else 
-            visionSquares.push(square);
+            this.visionSquares.push(square);
             } else {
-            visionSquares.push(square);
+            this.visionSquares.push(square);
             }
         }
-        if (this.onBoard(posY + 2, posX - 1)) {
-            square = theBoard.squares[posY + 2][posX - 1];
+        if (this.onBoard(this.posY + 2, this.posX - 1)) {
+            square = theBoard.squares[this.posY + 2][this.posX - 1];
             if (square.occupied) {
             //if (square.piece.side != this.side);
             //else 
-            visionSquares.push(square);
+            this.visionSquares.push(square);
             } else {
-            visionSquares.push(square);
+            this.visionSquares.push(square);
             }
         }
-        if (this.onBoard(posY + 2, posX + 1)) {
-            square = theBoard.squares[posY + 2][posX + 1];
+        if (this.onBoard(this.posY + 2, this.posX + 1)) {
+            square = theBoard.squares[this.posY + 2][this.posX + 1];
             if (square.occupied) {
             //if (square.piece.side != this.side);
             //else 
-            visionSquares.push(square);
+            this.visionSquares.push(square);
             } else {
-            visionSquares.push(square);
+            this.visionSquares.push(square);
             }
         }
-        if (this.onBoard(posY + 1, posX + 2)) {
-            square = theBoard.squares[posY + 1][posX + 2];
+        if (this.onBoard(this.posY + 1, this.posX + 2)) {
+            square = theBoard.squares[this.posY + 1][this.posX + 2];
             if (square.occupied) {
             //if (square.piece.side != this.side);
             //else 
-            visionSquares.push(square);
+            this.visionSquares.push(square);
             } else {
-            visionSquares.push(square);
+            this.visionSquares.push(square);
             }
         }
-        if (this.onBoard(posY - 1, posX + 2)) {
-            square = theBoard.squares[posY - 1][posX + 2];
+        if (this.onBoard(this.posY - 1, this.posX + 2)) {
+            square = theBoard.squares[this.posY - 1][this.posX + 2];
             if (square.occupied) {
             //if (square.piece.side != this.side);
             //else 
-            visionSquares.push(square);
+            this.visionSquares.push(square);
             } else {
-            visionSquares.push(square);
+            this.visionSquares.push(square);
             }
         }
-        if (this.onBoard(posY - 2, posX + 1)) {
-            square = theBoard.squares[posY - 2][posX + 1];
+        if (this.onBoard(this.posY - 2, this.posX + 1)) {
+            square = theBoard.squares[this.posY - 2][this.posX + 1];
             if (square.occupied) {
             //if (square.piece.side != this.side);
             //else 
-            visionSquares.push(square);
+            this.visionSquares.push(square);
             } else {
-            visionSquares.push(square);
+            this.visionSquares.push(square);
             }
         }
-        if (this.onBoard(posY - 2, posX - 1)) {
-            square = theBoard.squares[posY - 2][posX - 1];
+        if (this.onBoard(this.posY - 2, this.posX - 1)) {
+            square = theBoard.squares[this.posY - 2][this.posX - 1];
             if (square.occupied) {
             //if (square.piece.side != this.side);
             //else 
-            visionSquares.push(square);
+            this.visionSquares.push(square);
             } else {
-            visionSquares.push(square);
+            this.visionSquares.push(square);
             }
         }
-        if (this.onBoard(posY - 1, posX - 2)) {
-            square = theBoard.squares[posY - 1][posX - 2];
+        if (this.onBoard(this.posY - 1, this.posX - 2)) {
+            square = theBoard.squares[this.posY - 1][this.posX - 2];
             if (square.occupied) {
             //if (square.piece.side != this.side);
             //else 
-            visionSquares.push(square);
+            this.visionSquares.push(square);
             } else {
-            visionSquares.push(square);
+            this.visionSquares.push(square);
             }
         }
         
-        return visionSquares;
+        return this.visionSquares;
     }
+
     kingVision(theBoard) {
         let square;
       
         // From left up clockwise
-        if (this.onBoard(posY + 1, posX - 1)) {
-          square = theBoard.squares[posY + 1][posX - 1];
+        if (this.onBoard(this.posY + 1, this.posX - 1)) {
+          square = theBoard.squares[this.posY + 1][this.posX - 1];
           if (square.occupied) {
             //if (square.piece.side != this.side);
             //else 
-            visionSquares.push(square);
+            this.visionSquares.push(square);
           } else {
-            visionSquares.push(square);
+            this.visionSquares.push(square);
           }
         }
-        if (this.onBoard(posY + 1, posX)) {
-          square = theBoard.squares[posY + 1][posX];
+        if (this.onBoard(this.posY + 1, this.posX)) {
+          square = theBoard.squares[this.posY + 1][this.posX];
           if (square.occupied) {
             //if (square.piece.side != this.side);
             //else 
-            visionSquares.push(square);
+            this.visionSquares.push(square);
           } else {
-            visionSquares.push(square);
+            this.visionSquares.push(square);
           }
         }
-        if (this.onBoard(posY + 1, posX + 1)) {
-          square = theBoard.squares[posY + 1][posX + 1];
+        if (this.onBoard(this.posY + 1, this.posX + 1)) {
+          square = theBoard.squares[this.posY + 1][this.posX + 1];
           if (square.occupied) {
             //if (square.piece.side != this.side);
             //else 
-            visionSquares.push(square);
+            this.visionSquares.push(square);
           } else {
-            visionSquares.push(square);
+            this.visionSquares.push(square);
           }
         }
-        if (this.onBoard(posY, posX + 1)) {
-          square = theBoard.squares[posY][posX + 1];
+        if (this.onBoard(this.posY, this.posX + 1)) {
+          square = theBoard.squares[this.posY][this.posX + 1];
           if (square.occupied) {
             //if (square.piece.side != this.side);
             //else 
-            visionSquares.push(square);
+            this.visionSquares.push(square);
           } else {
-            visionSquares.push(square);
+            this.visionSquares.push(square);
           }
         }
-        if (this.onBoard(posY - 1, posX + 1)) {
-          square = theBoard.squares[posY - 1][posX + 1];
+        if (this.onBoard(this.posY - 1, this.posX + 1)) {
+          square = theBoard.squares[this.posY - 1][this.posX + 1];
           if (square.occupied) {
             //if (square.piece.side != this.side);
             //else 
-            visionSquares.push(square);
+            this.visionSquares.push(square);
           } else {
-            visionSquares.push(square);
+            this.visionSquares.push(square);
           }
         }
-        if (this.onBoard(posY - 1, posX)) {
-          square = theBoard.squares[posY - 1][posX];
+        if (this.onBoard(this.posY - 1, this.posX)) {
+          square = theBoard.squares[this.posY - 1][this.posX];
           if (square.occupied) {
             //if (square.piece.side != this.side);
             //else 
-            visionSquares.push(square);
+            this.visionSquares.push(square);
           } else {
-            visionSquares.push(square);
+            this.visionSquares.push(square);
           }
         }
-        if (this.onBoard(posY - 1, posX - 1)) {
-          square = theBoard.squares[posY - 1][posX - 1];
+        if (this.onBoard(this.posY - 1, this.posX - 1)) {
+          square = theBoard.squares[this.posY - 1][this.posX - 1];
           if (square.occupied) {
             //if (square.piece.side != this.side);
             //else 
-            visionSquares.push(square);
+            this.visionSquares.push(square);
           } else {
-            visionSquares.push(square);
+            this.visionSquares.push(square);
           }
         }
-        if (this.onBoard(posY, posX - 1)) {
-          square = theBoard.squares[posY][posX - 1];
+        if (this.onBoard(this.posY, this.posX - 1)) {
+          square = theBoard.squares[this.posY][this.posX - 1];
           if (square.occupied) {
             //if (square.piece.side != this.side);
             //else 
-            visionSquares.push(square);
+            this.visionSquares.push(square);
           } else {
-            visionSquares.push(square);
+            this.visionSquares.push(square);
           }
         }
       
-        return visionSquares;
+        return this.visionSquares;
       }
       
       pawnVision(theBoard) {
         let square;
       
-        if (this.onBoard(posY + sideId, posX + 1)) {
-          square = theBoard.squares[posY + sideId][posX + 1];
-          //if (square.occupied && square.piece.sideId == this.sideId) squares.add(square);
+        if (this.onBoard(this.posY + this.sideId, this.posX + 1)) {
+          square = theBoard.squares[this.posY + this.sideId][this.posX + 1];
+          //if (square.occupied && square.piece.this.sideId == this.this.sideId) squares.add(square);
           //else if (!square.occupied) 
-          visionSquares.push(square);
+          this.visionSquares.push(square);
         }
-        if (this.onBoard(posY + sideId, posX - 1)) {
-          square = theBoard.squares[posY + sideId][posX - 1];
-          //if (square.occupied && square.piece.sideId == this.sideId) squares.add(square);
+        if (this.onBoard(this.posY + this.sideId, this.posX - 1)) {
+          square = theBoard.squares[this.posY + this.sideId][this.posX - 1];
+          //if (square.occupied && square.piece.this.sideId == this.this.sideId) squares.add(square);
           //else if (!square.occupied) 
-          visionSquares.push(square);
+          this.visionSquares.push(square);
         }
       
-        return visionSquares;
+        return this.visionSquares;
       }
+
+      /**
+       * 
+       * @param {Square} square the square this piece is at
+       * @returns if the pawn is trying to promote
+       */
       promoting(square) {
-        if (id === PAWN) {
-          if ((sideId === -1 && square.y === 1) || (sideId === 1 && square.y === 8)) {
+        if (this.id === PAWN) {
+          if ((this.sideId === -1 && square.y === 1) || (this.sideId === 1 && square.y === 8)) {
             return true;
           }
         }
         return false;
       }
       
+
       moveToSquare(theBoard, square) {
         // Remove piece from original square
         square = theBoard.squares[square.y][square.x];
-        theBoard.squares[posY][posX].piece = new Piece(posX, posY);
-        theBoard.squares[posY][posX].occupied = false;
-        selected = false;
+        theBoard.squares[this.posY][this.posX].piece = new Piece(-100,this.posX, this.posY,-1);
+        theBoard.squares[this.posY][this.posX].occupied = false;
+        this.selected = false;
         // Set internal position
-        setPos(square);
+        this.setPos(square);
         // Take pieces
         if (square.occupied) {
           theBoard.pieces.splice(theBoard.pieces.indexOf(square.piece), 1);
         }
         square.occupied = true;
-        if (enpassant) {
-          theBoard.pieces.splice(theBoard.pieces.indexOf(theBoard.squares[square.y - sideId][square.x].piece), 1);
-          theBoard.squares[square.y - sideId][square.x].piece = new Piece(square.y - sideId, square.x);
+        if (this.enpassant) {
+          theBoard.pieces.splice(theBoard.pieces.indexOf(theBoard.squares[square.y - this.sideId][square.x].piece), 1);
+          theBoard.squares[square.y - this.sideId][square.x].piece = new Piece(square.y - this.sideId, square.x);
         }
         for (let i = 0; i < theBoard.pieces.length; i++) {
           theBoard.pieces[i].justMoved = false;
@@ -887,41 +904,41 @@ class Piece {
         }
         //if(theBoard.mated()!=0) start = false;
         square.piece = this; // Add piece to square
-        moved = true;
-        justMoved = true;
+        this.moved = true;
+        this.justMoved = true;
         // Alternate turn
         theBoard.turn *= -1;
       }
       
       setMaterial() {
-        switch (id) {
+        switch (this.id) {
           case ROOK:
-            material = 500;
+            this.material = 500;
             break;
           case KNIGHT:
-            material = 320;
+            this.material = 320;
             break;
           case BISHOP:
-            material = 330;
+            this.material = 330;
             break;
           case QUEEN:
-            material = 900;
+            this.material = 900;
             break;
           case KING:
-            material = 20000;
+            this.material = 20000;
             break;
           case PAWN:
-            material = 100;
+            this.material = 100;
             break;
           default:
-            material = 0;
+            this.material = 0;
             break;
         }
       }
       setValue(theBoard) {
         let posMat;
-        value = sideId * material;
-        switch (id) {
+        this.value = this.sideId * this.material;
+        switch (this.id) {
           case ROOK:
             posMat = [
               [0, 0, 0, 0, 0, 0, 0, 0],
@@ -933,10 +950,10 @@ class Piece {
               [-5, 0, 0, 0, 0, 0, 0, -5],
               [0, 0, 0, 5, 0, 5, 0, 0]
             ];
-            if (sideId === 1) {
-              value += sideId * posMat[8 - posY][8 - posX];
+            if (this.sideId === 1) {
+                this.value += this.sideId * posMat[8 - this.posY][8 - this.posX];
             } else {
-              value += sideId * posMat[posY - 1][posX - 1];
+                this.value += this.sideId * posMat[this.posY - 1][this.posX - 1];
             }
             break;
           case KNIGHT:
@@ -950,7 +967,7 @@ class Piece {
               [-40, -20, 0, 5, 5, 0, -20, -40],
               [-50, -40, -30, -30, -30, -30, -40, -50]
             ];
-            value += sideId * posMat[posY - 1][posX - 1];
+            this.value += this.sideId * posMat[this.posY - 1][this.posX - 1];
             break;
           case BISHOP:
             posMat = [
@@ -963,7 +980,7 @@ class Piece {
               [-10, 5, 0, 0, 0, 0, 5, -10],
               [-20, -10, -10, -10, -10, -10, -10, -20]
             ];
-            value += sideId * posMat[posY - 1][posX - 1];
+            this.value += this.sideId * posMat[this.posY - 1][this.posX - 1];
             break;
           case QUEEN:
             posMat = [
@@ -976,10 +993,10 @@ class Piece {
               [-10, 0, 5, 0, 0, 0, 0, -10],
               [-20, -10, -10, -5, -5, -10, -10, -20]
             ];
-            value += sideId * posMat[posY - 1][posX - 1];
+            this.value += this.sideId * posMat[this.posY - 1][this.posX - 1];
             break;
           case KING:
-            if (theBoard.materialCount(sideId * -1) > 21500) {
+            if (theBoard.materialCount(this.sideId * -1) > 21500) {
               posMat = [
                 [-30, -40, -40, -50, -50, -40, -40, -30],
                 [-30, -40, -40, -50, -50, -40, -40, -30],
@@ -1002,10 +1019,10 @@ class Piece {
                 [-50, -30, -30, -30, -30, -30, -30, -50]
               ];
             }
-            if (sideId === 1) {
-              value += sideId * posMat[8 - posY][8 - posX];
+            if (this.sideId === 1) {
+                this.value += this.sideId * posMat[8 - this.posY][8 - this.posX];
             } else {
-              value += sideId * posMat[posY - 1][posX - 1];
+                this.value += this.sideId * posMat[this.posY - 1][this.posX - 1];
             }
             break;
           case PAWN:
@@ -1019,10 +1036,10 @@ class Piece {
               [5, 10, 10, -20, -20, 10, 10, 5],
               [0, 0, 0, 0, 0, 0, 0, 0]
             ];
-            if (sideId === 1) {
-              value += sideId * posMat[8 - posY][8 - posY];
+            if (this.sideId === 1) {
+                this.value += this.sideId * posMat[8 - this.posY][8 - this.posY];
             } else {
-              value += sideId * posMat[posY - 1][posX - 1];
+                this.value += this.sideId * posMat[this.posY - 1][this.posX - 1];
             }
             break;
           default:
@@ -1030,30 +1047,30 @@ class Piece {
         }
       }
       diminishValue(theBoard) {
-        const v = theBoard.squares[posY][posX].visioned;
+        const v = theBoard.squares[this.posY][this.posX].visioned;
         const visioned = v[0] - v[1];
         if (visioned === 0) {
           // Do nothing
         } else if (visioned === -1) {
-          if (sideId === 1) {
+          if (this.sideId === 1) {
             value /= 2;
           } else {
             value *= 1.2;
           }
         } else if (visioned === 1) {
-          if (sideId === -1) {
+          if (this.sideId === -1) {
             value /= 2;
           } else {
             value *= 1.2;
           }
         } else if (visioned <= -2) {
-          if (sideId === 1) {
+          if (this.sideId === 1) {
             value /= 4;
           } else {
             value *= 1.34;
           }
         } else if (visioned >= 2) {
-          if (sideId === -1) {
+          if (this.sideId === -1) {
             value /= 4;
           } else {
             value *= 1.34;
@@ -1065,8 +1082,11 @@ class Piece {
         return !(x < 1 || x > 8 || y < 1 || y > 8);
       }
       
-      toString() {
-        return side + " " + name + " at " + board.squares[posY][posX];
+      toString(short = false) {
+        if(!short) return this.side + " " + this.name + " at " + board.squares[this.posY][this.posX];
+        return this.side[0] + " " + this.name.slice(0,2);
       }
+
+    
     }                          
                     

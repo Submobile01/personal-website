@@ -6,7 +6,7 @@ class Square {
       this.size = size;
       this.coordinateName = String.fromCharCode(96 + x) + y;
       this.occupied = false;
-      this.piece = new Piece(x, y);
+      this.piece = new Piece(-100,x, y,-1);
       this.visioned = [0, 0];
       this.flipped = false;
     }

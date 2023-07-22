@@ -8,7 +8,7 @@ class AI {
       let turn = theBoard.turn;
       
       if (depth === 0) {
-        return [theBoard.scoreuate(), pieceInd, squareInd];
+        return [theBoard.evaluate(), pieceInd, squareInd];
       }
       
       if (turn === 1) {

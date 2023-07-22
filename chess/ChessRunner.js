@@ -9,16 +9,18 @@ const QUEEN = 23;
 const KING = 24;
 const PAWN = 25;
 let board;
-let selectedPiece = new Piece(0, 0);
+let selectedPiece;
 let ai;
 let ai2;
 let evalBar;
 let start;
 
 function setup() {
-  createCanvas(800, 800);
+  gameCanvas = createCanvas(800, 800);
+  gameCanvas.parent("canvas-container");
   board = new Board();
-  ai = new AI(2, -1);
+  //ai = new AI(2, -1);
+  selectedPiece = new Piece(-100, 0, 0, -1)
   //ai2 = new AI(3, 1);
   //background(128, 233, 83);
 }
@@ -26,7 +28,7 @@ function setup() {
 function draw() {
   board.drawBoard();
   if (start) {
-    ai.move(board);
+    //ai.move(board);
     //ai2.move(board);
   }
   //println("turn is " + board.turn);
@@ -42,14 +44,14 @@ function mousePressed() {
       //piece.setValue();
     }*/
     let square = board.getSquare();
-    println("move squares: " + square.piece.detectMoves(board));
-    println("vision squares: " + square.piece.detectVision(board));
-    println("piece value: " + square.piece.value);
-    println("square controlled: " + square.visioned[0] + " and " + square.visioned[1]);
+    console.log("move squares: " + square.piece.detectMoves(board));
+    console.log("vision squares: " + square.piece.detectVision(board));
+    console.log("piece value: " + square.piece.value);
+    console.log("square controlled: " + square.visioned[0] + " and " + square.visioned[1]);
     //println(board.getSquare());
   } else { // remove piece for test
     board.pieces.splice(board.pieces.indexOf(board.getSquare().piece), 1);
-    board.getSquare().piece = new Piece(0, 0);
+    board.getSquare().piece = new Piece(-100, 0, 0, -1);
     board.getSquare().occupied = false;
   }
 }

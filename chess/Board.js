@@ -7,7 +7,7 @@ class Board {
       this.turn = 1;
       this.eval = 0;
       this.flipped = false;
-      
+      //this.selectedPiece;
       this.colorset[0] = color(88, 170, 88);
       this.colorset[1] = color(240, 255, 240);
       
@@ -18,7 +18,7 @@ class Board {
     drawBoard() {
       for (let i = 0; i < 10; i++) {
         for (let j = 0; j < 10; j++) {
-          if (i === 0 || i === 10 || j === 0 || j === 10) continue;
+          if (i === 0 || i === 9 || j === 0 || j === 9) continue;
           this.squares[i][j].drawIt();
         }
       }
@@ -46,7 +46,7 @@ class Board {
       for (let i = 0; i < 10; i++) {
         this.squares[i] = [];
         for (let j = 0; j < 10; j++) {
-          this.squares[i][j] = new Square(i, j, size / 8, this.colorset);
+          this.squares[i][j] = new Square(i, j, floor(this.size / 8), this.colorset);
         }
       }
     }
@@ -63,8 +63,8 @@ class Board {
     }
     
     getSquare() {
-      let x = 1 + mouseX / (this.size / 8);
-      let y = 8 - mouseY / (this.size / 8);
+      let x = 1 + floor(mouseX / (this.size / 8));
+      let y = 8 - floor(mouseY / (this.size / 8));
       
       if (!this.flipped) {
         return this.squares[y][x];
@@ -167,61 +167,62 @@ class Board {
     deselect() {
         let square = this.getSquare();
         if (selectedPiece.real) {
-        if (selectedPiece.checkLegal(board, square) && !this.getMoved(selectedPiece, square).checked()) {
-            if (selectedPiece.promoting(square)) {
-            this.pieces.splice(this.pieces.indexOf(selectedPiece), 1);
-            selectedPiece = new Piece(selectedPiece.sideId, selectedPiece.posX, selectedPiece.posY, QUEEN);
-            this.pieces.push(selectedPiece);
+            if (selectedPiece.checkLegal(board, square) && !this.getMoved(selectedPiece, square).checked()) {
+                if (selectedPiece.promoting(square)) {
+                    this.pieces.splice(this.pieces.indexOf(selectedPiece), 1);
+                    selectedPiece = new Piece(selectedPiece.sideId, selectedPiece.posX, selectedPiece.posY, QUEEN);
+                    this.pieces.push(selectedPiece);
+                }
+                selectedPiece.moveToSquare(this, square);
+                if (selectedPiece.castling === 2 || selectedPiece.castling === -2) {
+                    let rook = selectedPiece.getCastleRook(this);
+                    rook.moveToSquare(this, squares[selectedPiece.posY][selectedPiece.posX - selectedPiece.castling / 2]);
+                    this.turn *= -1;
+                    selectedPiece.castling = 0;
+                }
+                selectedPiece = new Piece(-100,0, 0,-1);
+                this.printBoard();
+            } else {
+                selectedPiece.selected = false;
+                selectedPiece = new Piece(-100,0, 0,-1);
             }
-            selectedPiece.moveToSquare(this, square);
-            if (selectedPiece.castling === 2 || selectedPiece.castling === -2) {
-            let rook = selectedPiece.getCastleRook(this);
-            rook.moveToSquare(this, squares[selectedPiece.posY][selectedPiece.posX - selectedPiece.castling / 2]);
-            this.turn *= -1;
-            selectedPiece.castling = 0;
-            }
-            selectedPiece = new Piece(0, 0);
-        } else {
-            selectedPiece.selected = false;
-            selectedPiece = new Piece(0, 0);
-        }
-        let mated = this.mated();
-        println("checkmate: " + (mated === 1));
-        println("stalemate: " + (mated === 2));
+            let mated = this.mated();
+            console.log("checkmate: " + (mated === 1));
+            console.log("stalemate: " + (mated === 2));
         }
     }
-    deselect(selectedPiece, square) {
+    deselectPiece(selectedPiece, square) {
         if (selectedPiece.real) {
-        if (selectedPiece.id === KING) {
-            if (selectedPiece.castle(this).contains(square)) {
-            selectedPiece.castling = square.x - selectedPiece.posX;
+            if (selectedPiece.id === KING) {
+                if (selectedPiece.castle(this).includes(square)) {
+                selectedPiece.castling = square.x - selectedPiece.posX;
+                }
             }
-        }
-        
-        if (selectedPiece.promoting(square)) {
-            this.pieces.splice(this.pieces.indexOf(selectedPiece), 1);
-            selectedPiece = new Piece(selectedPiece.sideId, selectedPiece.posX, selectedPiece.posY, QUEEN);
-            this.pieces.push(selectedPiece);
-        }
-        
-        selectedPiece.moveToSquare(this, square);
-        
-        if (selectedPiece.castling === 2 || selectedPiece.castling === -2) {
-            let rook = selectedPiece.getCastleRook(this);
-            rook.moveToSquare(this, squares[selectedPiece.posY][selectedPiece.posX - selectedPiece.castling / 2]);
-            this.turn *= -1;
-            selectedPiece.castling = 0;
-        }
-        
-        //selectedPiece = new Piece(0, 0);
-        else {
-            //selectedPiece.selected = false;
-            //selectedPiece = new Piece(0, 0);
-        }
-        
-        //int mated = mated();
-        //println("checkmate: " + (mated == 1));
-        //println("stalemate: " + (mated == 2));
+            
+            if (selectedPiece.promoting(square)) {
+                this.pieces.splice(this.pieces.indexOf(selectedPiece), 1);
+                selectedPiece = new Piece(selectedPiece.sideId, selectedPiece.posX, selectedPiece.posY, QUEEN);
+                this.pieces.push(selectedPiece);
+            }
+            
+            selectedPiece.moveToSquare(this, square);
+            
+            if (selectedPiece.castling === 2 || selectedPiece.castling === -2) {
+                let rook = selectedPiece.getCastleRook(this);
+                rook.moveToSquare(this, squares[selectedPiece.posY][selectedPiece.posX - selectedPiece.castling / 2]);
+                this.turn *= -1;
+                selectedPiece.castling = 0;
+            }
+            
+            //this.selectedPiece = new Piece(0, 0);
+            else {
+                //this.selectedPiece.selected = false;
+                //this.selectedPiece = new Piece(0, 0);
+            }
+            
+            //mated = mated();
+            //println("checkmate: " + (mated == 1));
+            //println("stalemate: " + (mated == 2));
         }
     }
     
@@ -238,8 +239,8 @@ class Board {
     getMoved(piece, toSquare) {
         let newBoard = new Board(this.clonePieces());
         newBoard.turn = this.turn;
-        let ind = pieces.indexOf(piece);
-        newBoard.deselect(newBoard.pieces[ind], toSquare);
+        let ind = this.pieces.indexOf(piece);
+        newBoard.deselectPiece(newBoard.pieces[ind], toSquare);
         return newBoard;
     }
     
@@ -265,6 +266,23 @@ class Board {
         }
         }
         return count;
+    }
+
+    printBoard(){
+      let outputStr = "";
+      for (let i = 0; i < 10; i++) {
+        
+        for (let j = 0; j < 10; j++) {
+          if (i === 0 || i === 9 || j === 0 || j === 9) continue;
+          let piece = this.squares[i][j].piece;
+          outputStr+=" ";
+          if(piece.real) outputStr+=piece.toString(true);
+          else outputStr+= "    "
+          outputStr+=" ";
+        }
+        outputStr+="\n------------------------------------------------------------\n";
+      }
+      console.log(outputStr);
     }
 }
       
