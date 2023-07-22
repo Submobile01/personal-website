@@ -8,15 +8,51 @@
             body {padding: 0; margin: 0;}
             .container {
                 text-align: center;
+                flex-direction: column;
             }
 
-            .content-wrapper {
+            .example-container {
                 display: flex;
-                justify-content: center;
-                text-align: left;
-                align-items: flex-start;
+                align-items: center;
+                justify-content: center; /* Center the images horizontally */
             }
+
+            .image-container {
+                display: flex;
+                flex-direction: column;
+                text-align: left;
+                border: 1px solid #000;
+                padding: 30px;
+                margin-bottom: 20px;
+                max-width: 300px;
+                min-height: 400px;
+            }
+
+                
             
+            section {
+                padding: 20px;
+                margin-bottom: 30px;
+                background-color: #f0f0f0;
+            }
+
+            .concept-block {
+                padding: 50px;
+                margin-bottom: 30px;
+                background-color: #9ebbf1;
+            }
+
+            .tutorial-pic {
+                max-width: 100%;
+                margin-top: 20px;
+                margin-bottom: 20px;
+                margin-right: 40px;
+                margin-left: 40px;
+            } 
+
+
+            
+
             canvas-container {
                 display: flex;
                 justify-content: center;
@@ -34,13 +70,12 @@
 
             .fancy-text {
                 font-family: "sacramento", cursive;
-                color:rgb(46, 92, 148);
+                color:rgb(53, 74, 99);
             }
             
             em {
                 color:rgba(0, 0, 0, 0.885);
             }
-            
             
             p {
                 margin-left: 20px;
@@ -59,14 +94,40 @@
     <body>
         <div class="container">
             <h1 class="main-title">Tutorial</h1>
-            <div class="content-wrapper">
-                We start with the simplest yet most useful technique. Notice that the middle square of each image
-                is a 1. (Reminder: this means there is 1 and only 1 mine among the 8 squares surrounding it). 
-                <img src="minesweeper/data/midCorner1Example1" alt=midCorner1Example1>
-                <img src="minesweeper/data/midCorner1Example2" alt=midCorner1Example2>
-                <img src="minesweeper/data/midCorner1Example3" alt=midCorner1Example3>
-
-            </div>
+            <section id="introduction">
+                <h2 class="section-title">Introduction</h2>
+                <p> We start with beginner level and work our way up! </p>
+                <p> Each block explains one scenario, provides examples, and gives an interactive challenge!</p>
+                <p> Have fun!</p>
+            </section>
+            <section id="beginners">
+                <h2 class="section-title">Beginners</h2>
+                <div class="concept-block">
+                    <h3>Dealing With Corner 1 Blocks</h3>
+                    <p> Notice that the middle square of each image
+                        is a 1. (Reminder: this means there is 1 and only 1 mine among the 8 squares surrounding it). </p>
+                    <div class="example-container">
+                        <div class="image-container">
+                            <p>The 1 has all of its surrounding blocks revealed except the upper-right one, which must be the mine. 
+                                Therefore, we marked it with flag
+                            </p>
+                            <img class="tutorial-pic" src="minesweeper/data/midCorner1Example1.png" alt=midCorner1Example1>
+                        </div>
+                        <div class="image-container">
+                            <p>The 1 has all except the left one revealed, so we need to mark it.</p>
+                            <img class="tutorial-pic" src="minesweeper/data/midCorner1Example2.png" alt=midCorner1Example2>
+                        </div>
+                    </div>
+                    <div class="example-container">
+                        <div class="image-container">
+                            <p>Assume the top-right of the 2 is a mine, then the only other block mine could be at is the bottom right,
+                                so we need to mark it.
+                            </p>
+                            <img class="tutorial-pic" src="minesweeper/data/midCorner1Example3.png" alt=midCorner1Example3>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             
 

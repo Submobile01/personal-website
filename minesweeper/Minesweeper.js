@@ -15,7 +15,7 @@ let startTime;
 let endTime;
 let clickCount = 0;
 let numMine;
-let densMine=0.23;
+let densMine;
 let flagCount;
 let blockCount;
 let buttonCount;
@@ -36,10 +36,12 @@ function setup() {
   columns = 20;
   remainingBlocks = document.getElementById("remaining-blocks");
   updateRemainingBlocks();
+
+  densMine = 0.18;
   const slider = document.getElementById("slider");
   const saveButton = document.getElementById("saveButton"); 
   if(slider) slider.addEventListener("input", ()=>{
-    document.getElementById("sliderValue").innerHTML = "Mine density is <strong>" + slider.value + "%</strong> ";
+    document.getElementById("sliderValue").innerHTML = "Mine density is <strong>" + slider.value + "%</strong>    ";
   });
   if(saveButton) saveButton.addEventListener("click", function() {
     densMine = parseInt(slider.value)/100;
@@ -611,7 +613,7 @@ function mouseReleased() {
   function updateRemainingBlocks(){
     remBlocks =  rows * columns - numMine;
     if(blockCount) remBlocks -= blockCount;
-    if(remainingBlocks) remainingBlocks.innerHTML = "Blocks Remaining: " + remBlocks  + " ";
+    if(remainingBlocks) remainingBlocks.innerHTML = "Blocks Remaining: " + remBlocks  + ".   ";
   }
 
   /**
