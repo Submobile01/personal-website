@@ -1,0 +1,22 @@
+.main-title {
+    font-family: "sacramento", cursive;
+}
+
+.section-title {
+    font-family: "Lobster", cursive;
+    color:#2f9f4b;
+}
+
+.fancy-text {
+    font-family: "sacramento", cursive;
+    color:rgb(53, 74, 99);
+}
+
+em {
+    color:rgba(0, 0, 0, 0.885);
+}
+
+p {
+    margin-left: 20px;
+    /* Additional styling for the game description */
+}

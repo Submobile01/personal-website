@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Minesweeper-Game</title>
-        
+        <link rel="stylesheet" href="text_style.css" type="text/css">
         <style> 
             body {padding: 0; margin: 0;}
             .container {
@@ -13,7 +13,7 @@
 
             .example-container {
                 display: flex;
-                align-items: center;
+                align-items: flex-end;
                 justify-content: center; /* Center the images horizontally */
             }
 
@@ -39,6 +39,9 @@
             .concept-block {
                 padding: 50px;
                 margin-bottom: 30px;
+                margin-top: 30px;
+                margin-left: 50px;
+                margin-right: 50px;
                 background-color: #9ebbf1;
             }
 
@@ -53,37 +56,16 @@
 
             
 
-            canvas-container {
+            .canvas-container {
                 display: flex;
                 justify-content: center;
                 align-items: center;
             }
-
-            .main-title {
-                font-family: "sacramento", cursive;
-            }
-
-            .section-title {
-                font-family: "Lobster", cursive;
-                color:#2f9f4b;
-            }
-
-            .fancy-text {
-                font-family: "sacramento", cursive;
-                color:rgb(53, 74, 99);
-            }
             
-            em {
-                color:rgba(0, 0, 0, 0.885);
-            }
             
-            p {
-                margin-left: 20px;
-                /* Additional styling for the game description */
-            }
               
         </style>
-
+        
         
         
         
@@ -96,12 +78,15 @@
             <h1 class="main-title">Tutorial</h1>
             <section id="introduction">
                 <h2 class="section-title">Introduction</h2>
+                <p> Always guessing the whole square? Have no idea where the mine is? This tutorial is for you!</p>
                 <p> We start with beginner level and work our way up! </p>
                 <p> Each block explains one scenario, provides examples, and gives an interactive challenge!</p>
                 <p> Have fun!</p>
             </section>
             <section id="beginners">
                 <h2 class="section-title">Beginners</h2>
+                <p> Conquering the 100%s first! </p>
+                <p> This section contains scenarios that one can solve <em>quickly</em> with <em>1000%</em> accuracy.</p>
                 <div class="concept-block">
                     <h3>Dealing With Corner 1 Blocks</h3>
                     <p> Notice that the middle square of each image
@@ -117,17 +102,53 @@
                             <p>The 1 has all except the left one revealed, so we need to mark it.</p>
                             <img class="tutorial-pic" src="minesweeper/data/midCorner1Example2.png" alt=midCorner1Example2>
                         </div>
+                        
                     </div>
                     <div class="example-container">
                         <div class="image-container">
-                            <p>Assume the top-right of the 2 is a mine, then the only other block mine could be at is the bottom right,
-                                so we need to mark it.
+                            <p>Assume the top-right of the 2 is a mine, then we can <em>treat the 2 block as a 1</em> with 
+                                only bottom right unrevealed, so it must be a mine.
                             </p>
                             <img class="tutorial-pic" src="minesweeper/data/midCorner1Example3.png" alt=midCorner1Example3>
                         </div>
                     </div>
                 </div>
+
+                <div class="concept-block">
+                    <h3>Dealing With Corner N Blocks</h3>
+                    <p> The concept will be the same if there are N unrevealed square surrounding an N number square </p>
+                    <p> All unrevealed squares must be mine(s)!</p>
+                    <div class="example-container">
+                        <div class="image-container">
+                            <p>The corner 1 is determines the first(left) mine, and then the 2 square determines the second mine.
+                            </p>
+                            <img class="tutorial-pic" src="minesweeper/data/midCorner2Example1.png" alt=midCorner2Example1>
+                        </div>
+                        <div class="image-container">
+                            <p>Almost the same scenario, but we can also think of the 2 square having only 2 surrounding unrevealed squares.</p>
+                            <p>Thus, both of them has to be mines!</p>
+                            <img class="tutorial-pic" src="minesweeper/data/midCorner2Example2.png" alt=midCorner2Example2>
+                        </div>
+                        
+                    </div>
+                    <div class="example-container">
+                        <div class="image-container">
+                            <p> 3 square with 3 unrevealed squares.
+                            </p>
+                            <img class="tutorial-pic" src="minesweeper/data/midCorner3Example1.png" alt=midCorner3Example1>
+                        </div>
+                        <div class="image-container">
+                            <p> 4 square with 4 unrevealed squares.
+                            <img class="tutorial-pic" src="minesweeper/data/midCorner4Example1.png" alt=midCorner4Example1>
+                        </div>
+                    </div>
+                </div>
+                
             </section>
+
+            
+
+
 
             
 
