@@ -29,7 +29,7 @@ let volumeSlider;
 
 function setup() {
   gameCanvas = createCanvas(800, 600);
-  gameCanvas.parent("canvas-container");
+  gameCanvas.parent("main-canvas");
   // canvasDiv = document.getElementById("canvas-container");
   // if(canvasDiv) canvasDiv.appendChild(gameCanvas);
   rows = 15;
