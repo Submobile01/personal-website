@@ -20,3 +20,10 @@ p {
     margin-left: 20px;
     /* Additional styling for the game description */
 }
+
+.main-header{
+    background-image: url("images/self_picture");
+    background-color: rgba(0, 0, 0, 0.885);
+    background-blend-mode: multiply;
+    background-size: cover;
+}
