@@ -2,6 +2,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    background-color: antiquewhite;
   }
   header {
     background-color: #f2f2f2;
@@ -30,9 +31,16 @@ body {
   }
 
   .main-header{
-    height:200px;
+    height:150px;
     background-image: url("images/self_picture.jpg");
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.1);
     background-blend-mode: multiply;
     background-size: cover;
+}
+
+.box{
+    margin-left: 20%;
+    margin-right:20%;
+    border: 10px black;
+    background-color: rgb(231, 207, 187);
 }
