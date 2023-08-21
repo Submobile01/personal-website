@@ -32,7 +32,7 @@ body {
 
   .main-header{
     height:150px;
-    background-image: url("images/self_picture.jpg");
+    background-image: url("../images/self_picture.jpg");
     background-color: rgba(0, 0, 0, 0.1);
     background-blend-mode: multiply;
     background-size: cover;
